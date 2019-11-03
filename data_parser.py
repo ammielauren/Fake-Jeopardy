@@ -20,4 +20,11 @@ def selectCategories(l):
     categories = set()
     for question in l:
         categories.add(question['category'])
-    return list(categories)
+
+    #Removes double jeopardy and final jeopardy questions
+    categoryList = list(categories)
+    for question in l:
+        if question['value'] == '$2000' or question['value'] == None:
+            categoryList.remove(question['category'])
+    
+    return categoryList
