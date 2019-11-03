@@ -10,7 +10,7 @@ class SplashScreenMode(Mode):
         font = 'Arial 26 bold'
         canvas.create_rectangle(0,0,mode.width,mode.height,fill='darkblue')
         canvas.create_text(mode.width//2,mode.height//2,text='SplashScreen',font=font,fill='yellow')
-    
+
     def keyPressed(mode, event):
         mode.app.setActiveMode(mode.app.gameMode)
 
@@ -47,7 +47,7 @@ class GameMode(Mode):
         mode.categories = selectCategories(mode.jeopardyQs)
         (mode.question, mode.answer) = (None, None)
 
-        for row in range(mode.rows):
+        for row in range(1, mode.rows):
             for col in range(mode.cols):
                 mode.values[row][col] = (row)*200
 
@@ -98,11 +98,13 @@ class GameMode(Mode):
         # If player clicks inside of a question box
         # Then mode turns into QuestionMode
         x0, y0 = event.x, event.y
+        # Input the question
         row, col = GameMode.getCell(mode, x0, y0)
         print(row, col)
         if (row > 0 and col >= 0):
             category = mode.categories[col]
             value = mode.values[row][col]
+            GameMode.getQuestionAnswer(mode, category, value)
             print(f'{category}, {value}')
             GameMode.getQuestionAnswer(mode, category, value)
             mode.app.setActiveMode(mode.app.questionMode)
@@ -119,6 +121,15 @@ class GameMode(Mode):
         else:
             print(f'{mode.question}, {mode.answer}')
         return (4,2)
+
+# mode.app.setActiveMode(mode.app.gameMode)
+
+    def getQuestionAnswer(mode, category, value):
+#        jeopardyQs[category, value] => question, answer
+        question = 'Hmm?'
+        answer = 'Henry'
+        print('Question, answer')
+        mode.app.setActiveMode(mode.app.questionMode(question, answer))
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
@@ -162,10 +173,44 @@ class Question(object):
 
 # 4. Question mode
 class QuestionMode(Mode):
+
+    def appStarted(mode):
+        print("WHWIEWKEWE")
+        mode.question = mode.app.gameMode.question
+        mode.answer = mode.app.gameMode.answer
+        """mode.url = mode.isImage(mode.question)
+        print(mode.url)
+        if mode.url != "":
+            mode.image = mode.loadImage(mode.url)"""
+
+        mode.showAnswer = False
+
+    """def isImage(mode, question):
+        url = ""
+        if question == None:
+            return None
+        split = question.split()
+        for word in split:
+            if word.startswith("href"):
+                url = word[4:]
+                split.remove(word)
+                " ".join(mode.question)
+        return url
+        #return mode.loadImage(url)"""
+
     def redrawAll(mode, canvas):
         canvas.create_rectangle(0,0, mode.width, mode.height, fill = "blue")
-        canvas.create_text(mode.width/2, mode.height/2, 
-                            text = mode.app.gameMode.question, width = mode.width)
+        canvas.create_text(mode.width/2, mode.height/3, 
+                            text = mode.app.gameMode.question, width = mode.width,
+                            font = 'Arial 30 bold')
+        """
+        if mode.url != "":
+            canvas.create_image(mode.width/2, 2 * mode.height/3,
+                            image=ImageTk.PhotoImage(mode.image))"""
+
+        if mode.showAnswer:
+            canvas.create_text(mode.width/2, 2 * mode.height/3, text =
+                                mode.app.gameMode.answer)
         """font = 'Arial 26 bold'
         txt = f'Question Mode\nQuestion={mode.question}\nAnswer={mode.answer}'
         canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)"""
@@ -173,6 +218,8 @@ class QuestionMode(Mode):
     def keyPressed(mode, event):
         if event.key == "p":
             mode.app.setActiveMode(mode.app.gameMode)
+        elif event.key == "a":
+            mode.showAnswer = True
 
 ###############################
 # Making app
