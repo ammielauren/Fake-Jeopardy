@@ -31,7 +31,7 @@ class GameMode(Mode):
     def gameDimensions():
         rows = 6
         cols = 6
-        cellSize = 60
+        cellSize = 450/6
         margin = 25
         return(rows, cols, cellSize, margin)    
 
@@ -45,6 +45,7 @@ class GameMode(Mode):
 
         mode.jeopardyQs = selectRandomJeopardyGame("JEOPARDY_QUESTIONS1.json")
         mode.categories = selectCategories(mode.jeopardyQs)
+        (mode.question, mode.answer) = (None, None)
 
         for row in range(mode.rows):
             for col in range(mode.cols):
@@ -63,6 +64,14 @@ class GameMode(Mode):
     def drawBackground(mode, canvas):
         canvas.create_rectangle(0, 0, mode.width, mode.height, fill='pink')
 
+    def findMaxLength(mode):
+        maxLength = 1
+        for i in range(len(mode.categories)):
+            length = len(mode.categories[i])
+            if length >= maxLength:
+                length = maxLength
+        return maxLength
+
     def drawBoard(mode, canvas):
         maxLen = mode.findMaxLength()
         for row in range(mode.rows):
@@ -74,7 +83,6 @@ class GameMode(Mode):
                                         width = x1-x0)
                 else:
                     canvas.create_text((x0+x1)/2,(y0+y1)/2, text = mode.values[row][col])
-
 
     def redrawAll(mode, canvas):
         GameMode.drawBackground(mode, canvas)
@@ -96,22 +104,17 @@ class GameMode(Mode):
             category = mode.categories[col]
             value = mode.values[row][col]
             print(f'{category}, {value}')
-            GameMode.getQuestionAnswer(mode, category, value)
+            (mode.question, mode.answer) = GameMode.getQuestionAnswer(mode, category, value)
+            mode.app.setActiveMode(mode.app.questionMode)
+            print(f'{mode.question}, {mode.answer}')
 
     def getQuestionAnswer(mode, category, value):
-        (question, answer) = (None, None)
         for questions in mode.jeopardyQs:
             if (questions['category'] == category 
                     and questions['value'] == "$" + str(value)):
-                    (question, answer) = (questions['question'], questions['answer'])
-        #app.setActiveMode(QuestionMode(question, answer))
-        if question == None:
-            print("WHAATTT?????")
-        elif answer == None:
-            print("HUH?")
-        else:
-            print(f'{question}, {answer}')
-        return (4,2)
+                    return(questions['question'], questions['answer'])
+        return ("No Question", "No Answer")
+
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
@@ -144,15 +147,31 @@ class GameMode(Mode):
         # return True if (x, y) is inside the grid defined by mode.
         return ((mode.margin <= x <= mode.width-mode.margin) and
                 (mode.margin <= y <= mode.height-mode.margin))
+
+#Question Class
+class Question(object):
+    def __init__(self, question, answer):
+        self.question = question
+        self.answer = answer
+
+
 # 4. Question mode
 class QuestionMode(GameMode):
-    def __init__(mode, question, answer):
-        mode.question = question
-        mode.answer = answer
+    def appStarted(mode):
+        super().appStarted()
+        mode.questionAnswer = Question(mode.question, mode.answer)
+
     def redrawAll(mode, canvas):
-        font = 'Arial 26 bold'
+        canvas.create_rectangle(0,0, mode.width, mode.height, fill = "blue")
+        canvas.create_text(mode.width/2, mode.height/2, 
+                            text = mode.questionAnswer.question)
+        """font = 'Arial 26 bold'
         txt = f'Question Mode\nQuestion={mode.question}\nAnswer={mode.answer}'
-        canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)
+        canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)"""
+
+    def keyPressed(mode, event):
+        if event.key == "p":
+            mode.app.setActiveMode(mode.app.gameMode)
 
 ###############################
 # Making app
@@ -163,7 +182,7 @@ class OurApp(ModalApp):
         app.splashScreenMode = SplashScreenMode()
         app.gameMode = GameMode()
         app.helpMode = HelpMode()
-        app.questionMode = QuestionMode('','')
+        app.questionMode = QuestionMode()
         app.setActiveMode(app.splashScreenMode)
         
 jeopardyApp = OurApp(width = 500, height = 500)
