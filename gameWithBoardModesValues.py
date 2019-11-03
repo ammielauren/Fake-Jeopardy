@@ -1,3 +1,4 @@
+
 from cmu_112_graphics import *
 from tkinter import *
 from data_parser import *
@@ -10,7 +11,7 @@ class SplashScreenMode(Mode):
     def redrawAll(mode, canvas):
         font = 'Arial 26 bold'
         canvas.create_rectangle(0,0,mode.width,mode.height,fill='darkblue')
-        canvas.create_text(mode.width//2,mode.height//2,text='SplashScreen',font=font,fill='yellow')
+        canvas.create_text(mode.width//2,mode.height//2,text='JEOPARDY',font=font,fill='yellow')
     
     def keyPressed(mode, event):
         mode.app.setActiveMode(mode.app.gameMode)
@@ -19,7 +20,7 @@ class SplashScreenMode(Mode):
 class HelpMode(Mode):
     def redrawAll(mode, canvas):
         font = 'Arial 26 bold'
-        canvas.create_text(mode.width//2,mode.height//2,text='Help',font=font)
+        canvas.create_text(mode.width//2,mode.height//2,text='Press space to answer, press b to go back',font=font)
 
     def keyPressed(mode, event):
         if (event.key != 'q'):
@@ -88,8 +89,7 @@ class GameMode(Mode):
     def redrawAll(mode, canvas):
         GameMode.drawBackground(mode, canvas)
         GameMode.drawBoard(mode, canvas)
-        font = 'Arial 26 bold'
-        canvas.create_text(mode.width//2,mode.height//2,text='Game',font=font)
+
 
     def keyPressed(mode, event):
         if (event.key == 'h'):
@@ -119,11 +119,7 @@ class GameMode(Mode):
             print("HUH?")
         else:
             print(f'{mode.question}, {mode.answer}')
-<<<<<<< Updated upstream
         return (4,2)
-=======
-        mode.app.setActiveMode(mode.app.questionMode)
->>>>>>> Stashed changes
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
@@ -161,22 +157,11 @@ class GameMode(Mode):
 class QuestionMode(Mode):
 
     def appStarted(mode):
-<<<<<<< Updated upstream
         mode.sec = 30
-        mode.question = mode.app.gameMode.question
-        mode.answer = mode.app.gameMode.answer
-=======
-        print("WHWIEWKEWE")
         mode.message = None
         mode.question = mode.app.gameMode.question
         mode.answer = mode.app.gameMode.answer
         mode.answeringQuestion = False
-        """mode.url = mode.isImage(mode.question)
-        print(mode.url)
-        if mode.url != "":
-            mode.image = mode.loadImage(mode.url)"""
->>>>>>> Stashed changes
-
         mode.showAnswer = False
         mode.wrongAnswer = False
 
@@ -191,49 +176,38 @@ class QuestionMode(Mode):
         canvas.create_text(mode.width/2, mode.height/3, 
                             text = mode.app.gameMode.question, width = mode.width - 50,
                             font = 'Arial 30 bold')
-<<<<<<< Updated upstream
-
         if mode.showAnswer:
             canvas.create_text(mode.width/2, 2 * mode.height/3, text =
                                 mode.app.gameMode.answer)
-        
-        if mode.wrongAnswer:
-            canvas.create_rectangle(0,0, mode.width, mode.height, fill = "red")
-            canvas.create_text(mode.width/2, mode.height/2, text = "Wrong", font = "Arial 36 bold")
 
-    def keyPressed(mode, event):
-        if event.key == "p":
-            mode.showAnswer = False
-            mode.wrongAnswer = False
-=======
-        """
-        if mode.url != "":
-            canvas.create_image(mode.width/2, 2 * mode.height/3,
-                            image=ImageTk.PhotoImage(mode.image))"""
         if (mode.showAnswer):
             canvas.create_text(mode.width//2,mode.height//2,text=mode.message)
-        elif mode.showAnswer:
-            canvas.create_text(mode.width/2, 2 * mode.height/3, text =
-                                mode.app.gameMode.answer)
+            canvas.create_text(mode.width/2, 2 * mode.height/3, 
+                                text = f'{mode.app.gameMode.answer}')
 #        """font = 'Arial 26 bold'
 #        txt = f'Question Mode\nQuestion={mode.question}\nAnswer={mode.answer}'
 #        canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)"""
 
     def keyPressed(mode, event):
         if event.key == "b":
->>>>>>> Stashed changes
+            mode.sec = 30
+            mode.message = None
+            mode.showAnswer = False
+            mode.wrongAnswer = False
+            mode.answeringQuestion = False
             mode.app.setActiveMode(mode.app.gameMode)
-#        elif event.key == "a":
-#            mode.showAnswer = True
+        elif event.key == "a":
+            mode.showAnswer = True
         elif event.key == 'Space':
             rawAnswer = mode.getUserInput('')
             if (rawAnswer != None):
-                if (rawAnswer.lower == mode.answer.lower):
+                if (str(rawAnswer) == str(mode.app.gameMode.answer)):
                     mode.message = 'Correct!'
                 else:
                     mode.message = 'Incorrect.'
             else: mode.message = 'No answer.'
             mode.showAnswer = True
+
 
 ###############################
 # Making app
