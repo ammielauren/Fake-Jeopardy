@@ -90,16 +90,21 @@ class GameMode(Mode):
             category = mode.categories[col]
             value = mode.values[row][col]
             print(f'{category}, {value}')
-            GameMode.getQuestionAnswer(category, value)
+            GameMode.getQuestionAnswer(mode, category, value)
 
-    def getQuestionAnswer(category, value):
-        for question in mode.jeopardyQs:
-            if (question['category'] == category 
-                    and question['value'] == value):
-                    (question, answer) = (question['question'], question['answer'])
-#        jeopardyQs[category, value] => question, answer
-#        app.setActiveMode(QuestionMode(question, answer))
-        print(f'{question}, {answer}')
+    def getQuestionAnswer(mode, category, value):
+        (question, answer) = (None, None)
+        for questions in mode.jeopardyQs:
+            if (questions['category'] == category 
+                    and questions['value'] == "$" + str(value)):
+                    (question, answer) = (questions['question'], questions['answer'])
+        #app.setActiveMode(QuestionMode(question, answer))
+        if question == None:
+            print("WHAATTT?????")
+        elif answer == None:
+            print("HUH?")
+        else:
+            print(f'{question}, {answer}')
         return (4,2)
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
