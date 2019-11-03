@@ -119,7 +119,11 @@ class GameMode(Mode):
             print("HUH?")
         else:
             print(f'{mode.question}, {mode.answer}')
+<<<<<<< Updated upstream
         return (4,2)
+=======
+        mode.app.setActiveMode(mode.app.questionMode)
+>>>>>>> Stashed changes
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
@@ -153,21 +157,25 @@ class GameMode(Mode):
         return ((mode.margin <= x <= mode.width-mode.margin) and
                 (mode.margin <= y <= mode.height-mode.margin))
 
-#Question Class
-class Question(object):
-    def __init__(self, question, answer):
-        self.question = question
-        self.answer = answer
-
-        
-
 # 4. Question mode
 class QuestionMode(Mode):
 
     def appStarted(mode):
+<<<<<<< Updated upstream
         mode.sec = 30
         mode.question = mode.app.gameMode.question
         mode.answer = mode.app.gameMode.answer
+=======
+        print("WHWIEWKEWE")
+        mode.message = None
+        mode.question = mode.app.gameMode.question
+        mode.answer = mode.app.gameMode.answer
+        mode.answeringQuestion = False
+        """mode.url = mode.isImage(mode.question)
+        print(mode.url)
+        if mode.url != "":
+            mode.image = mode.loadImage(mode.url)"""
+>>>>>>> Stashed changes
 
         mode.showAnswer = False
         mode.wrongAnswer = False
@@ -183,6 +191,7 @@ class QuestionMode(Mode):
         canvas.create_text(mode.width/2, mode.height/3, 
                             text = mode.app.gameMode.question, width = mode.width - 50,
                             font = 'Arial 30 bold')
+<<<<<<< Updated upstream
 
         if mode.showAnswer:
             canvas.create_text(mode.width/2, 2 * mode.height/3, text =
@@ -196,8 +205,34 @@ class QuestionMode(Mode):
         if event.key == "p":
             mode.showAnswer = False
             mode.wrongAnswer = False
+=======
+        """
+        if mode.url != "":
+            canvas.create_image(mode.width/2, 2 * mode.height/3,
+                            image=ImageTk.PhotoImage(mode.image))"""
+        if (mode.showAnswer):
+            canvas.create_text(mode.width//2,mode.height//2,text=mode.message)
+        elif mode.showAnswer:
+            canvas.create_text(mode.width/2, 2 * mode.height/3, text =
+                                mode.app.gameMode.answer)
+#        """font = 'Arial 26 bold'
+#        txt = f'Question Mode\nQuestion={mode.question}\nAnswer={mode.answer}'
+#        canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)"""
+
+    def keyPressed(mode, event):
+        if event.key == "b":
+>>>>>>> Stashed changes
             mode.app.setActiveMode(mode.app.gameMode)
-        elif event.key == "a":
+#        elif event.key == "a":
+#            mode.showAnswer = True
+        elif event.key == 'Space':
+            rawAnswer = mode.getUserInput('')
+            if (rawAnswer != None):
+                if (rawAnswer.lower == mode.answer.lower):
+                    mode.message = 'Correct!'
+                else:
+                    mode.message = 'Incorrect.'
+            else: mode.message = 'No answer.'
             mode.showAnswer = True
 
 ###############################
