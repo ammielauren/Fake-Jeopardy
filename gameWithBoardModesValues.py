@@ -1,5 +1,6 @@
 from cmu_112_graphics import *
 from tkinter import *
+from data_parser import *
 
 # GameModes
 
@@ -41,6 +42,10 @@ class GameMode(Mode):
         mode.emptyColor = "light blue"
         mode.board  = [[mode.emptyColor]*mode.cols for rows in range(mode.rows)]
         mode.values = [[0]*mode.cols for rows in range(mode.rows)]
+
+        mode.jeopardyQs = selectRandomJeopardyGame("JEOPARDY_QUESTIONS1.json")
+        mode.categories = selectCategories(mode.jeopardyQs)
+
         for row in range(mode.rows):
             for col in range(mode.cols):
                 mode.values[row][col] = (row+1)*200
@@ -82,15 +87,19 @@ class GameMode(Mode):
         row, col = GameMode.getCell(mode, x0, y0)
         print(row, col)
         if (row > 0 and col >= 0):
-            category = 'Dogs'
+            category = mode.categories[col]
             value = mode.values[row][col]
             print(f'{category}, {value}')
             GameMode.getQuestionAnswer(category, value)
 
     def getQuestionAnswer(category, value):
+        for question in mode.jeopardyQs:
+            if (question['category'] == category 
+                    and question['value'] == value):
+                    (question, answer) = (question['question'], question['answer'])
 #        jeopardyQs[category, value] => question, answer
 #        app.setActiveMode(QuestionMode(question, answer))
-        print('Question, answer')
+        print(f'{question}, {answer}')
         return (4,2)
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
