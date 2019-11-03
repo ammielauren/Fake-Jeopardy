@@ -10,7 +10,7 @@ class SplashScreenMode(Mode):
         font = 'Arial 26 bold'
         canvas.create_rectangle(0,0,mode.width,mode.height,fill='darkblue')
         canvas.create_text(mode.width//2,mode.height//2,text='SplashScreen',font=font,fill='yellow')
-    
+
     def keyPressed(mode, event):
         mode.app.setActiveMode(mode.app.gameMode)
 
@@ -47,7 +47,7 @@ class GameMode(Mode):
         mode.categories = selectCategories(mode.jeopardyQs)
         (mode.question, mode.answer) = (None, None)
 
-        for row in range(mode.rows):
+        for row in range(1, mode.rows):
             for col in range(mode.cols):
                 mode.values[row][col] = (row)*200
 
@@ -98,11 +98,13 @@ class GameMode(Mode):
         # If player clicks inside of a question box
         # Then mode turns into QuestionMode
         x0, y0 = event.x, event.y
+        # Input the question
         row, col = GameMode.getCell(mode, x0, y0)
         print(row, col)
         if (row > 0 and col >= 0):
             category = mode.categories[col]
             value = mode.values[row][col]
+            GameMode.getQuestionAnswer(mode, category, value)
             print(f'{category}, {value}')
             GameMode.getQuestionAnswer(mode, category, value)
             mode.app.setActiveMode(mode.app.questionMode)
@@ -119,6 +121,15 @@ class GameMode(Mode):
         else:
             print(f'{mode.question}, {mode.answer}')
         return (4,2)
+
+# mode.app.setActiveMode(mode.app.gameMode)
+
+    def getQuestionAnswer(mode, category, value):
+#        jeopardyQs[category, value] => question, answer
+        question = 'Hmm?'
+        answer = 'Henry'
+        print('Question, answer')
+        mode.app.setActiveMode(mode.app.questionMode(question, answer))
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
