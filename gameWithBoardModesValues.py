@@ -162,10 +162,44 @@ class Question(object):
 
 # 4. Question mode
 class QuestionMode(Mode):
+
+    def appStarted(mode):
+        print("WHWIEWKEWE")
+        mode.question = mode.app.gameMode.question
+        mode.answer = mode.app.gameMode.answer
+        """mode.url = mode.isImage(mode.question)
+        print(mode.url)
+        if mode.url != "":
+            mode.image = mode.loadImage(mode.url)"""
+
+        mode.showAnswer = False
+
+    """def isImage(mode, question):
+        url = ""
+        if question == None:
+            return None
+        split = question.split()
+        for word in split:
+            if word.startswith("href"):
+                url = word[4:]
+                split.remove(word)
+                " ".join(mode.question)
+        return url
+        #return mode.loadImage(url)"""
+
     def redrawAll(mode, canvas):
         canvas.create_rectangle(0,0, mode.width, mode.height, fill = "blue")
-        canvas.create_text(mode.width/2, mode.height/2, 
-                            text = mode.app.gameMode.question, width = mode.width)
+        canvas.create_text(mode.width/2, mode.height/3, 
+                            text = mode.app.gameMode.question, width = mode.width,
+                            font = 'Arial 30 bold')
+        """
+        if mode.url != "":
+            canvas.create_image(mode.width/2, 2 * mode.height/3,
+                            image=ImageTk.PhotoImage(mode.image))"""
+
+        if mode.showAnswer:
+            canvas.create_text(mode.width/2, 2 * mode.height/3, text =
+                                mode.app.gameMode.answer)
         """font = 'Arial 26 bold'
         txt = f'Question Mode\nQuestion={mode.question}\nAnswer={mode.answer}'
         canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)"""
@@ -173,6 +207,8 @@ class QuestionMode(Mode):
     def keyPressed(mode, event):
         if event.key == "p":
             mode.app.setActiveMode(mode.app.gameMode)
+        elif event.key == "a":
+            mode.showAnswer = True
 
 ###############################
 # Making app
