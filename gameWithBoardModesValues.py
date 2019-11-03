@@ -43,7 +43,7 @@ class GameMode(Mode):
         mode.values = [[0]*mode.cols for rows in range(mode.rows)]
         for row in range(mode.rows):
             for col in range(mode.cols):
-                mode.values[row][col] = (col+1)*200
+                mode.values[row][col] = (row+1)*200
 
     #from the notes with minor changes
     def drawCell(mode, row, col):
@@ -79,14 +79,13 @@ class GameMode(Mode):
         # If player clicks inside of a question box
         # Then mode turns into QuestionMode
         x0, y0 = event.x, event.y
-        # Input the question
         row, col = GameMode.getCell(mode, x0, y0)
         print(row, col)
         if (row > 0 and col >= 0):
             category = 'Dogs'
-            value = (col+1)*200
-            question, answer = GameMode.getQuestionAnswer(category, value)
+            value = mode.values[row][col]
             print(f'{category}, {value}')
+            GameMode.getQuestionAnswer(category, value)
 
     def getQuestionAnswer(category, value):
 #        jeopardyQs[category, value] => question, answer
