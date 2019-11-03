@@ -48,7 +48,7 @@ class GameMode(Mode):
 
         for row in range(mode.rows):
             for col in range(mode.cols):
-                mode.values[row][col] = (row+1)*200
+                mode.values[row][col] = (row)*200
 
     #from the notes with minor changes
     def drawCell(mode, row, col):
@@ -64,11 +64,17 @@ class GameMode(Mode):
         canvas.create_rectangle(0, 0, mode.width, mode.height, fill='pink')
 
     def drawBoard(mode, canvas):
+        maxLen = mode.findMaxLength()
         for row in range(mode.rows):
             for col in range(mode.cols):
                 (x0, y0, x1, y1) = GameMode.drawCell(mode, row, col)
                 canvas.create_rectangle(x0,y0,x1,y1)
-                canvas.create_text((x0+x1)/2,(y0+y1)/2, text = mode.values[row][col])
+                if row == 0:
+                    canvas.create_text((x0+x1)/2,(y0+y1)/2, text = mode.categories[col],
+                                        width = x1-x0)
+                else:
+                    canvas.create_text((x0+x1)/2,(y0+y1)/2, text = mode.values[row][col])
+
 
     def redrawAll(mode, canvas):
         GameMode.drawBackground(mode, canvas)
