@@ -87,11 +87,11 @@ class GameMode(Mode):
             print(f'{category}, {value}')
             GameMode.getQuestionAnswer(category, value)
 
-    def getQuestionAnswer(category, value):
-#        jeopardyQs[category, value] => question, answer
-#        app.setActiveMode(QuestionMode(question, answer))
+    def getQuestionAnswer(mode, category, value):
+#       jeopardyQs[category, value] => question, answer
+        app.setActiveMode(QuestionMode(question, answer))
         print('Question, answer')
-        return (4,2)
+        return f'Question = ? Answer = ? Value = {value}'
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
