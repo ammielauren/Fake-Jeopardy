@@ -104,17 +104,21 @@ class GameMode(Mode):
             category = mode.categories[col]
             value = mode.values[row][col]
             print(f'{category}, {value}')
-            (mode.question, mode.answer) = GameMode.getQuestionAnswer(mode, category, value)
+            GameMode.getQuestionAnswer(mode, category, value)
             mode.app.setActiveMode(mode.app.questionMode)
-            print(f'{mode.question}, {mode.answer}')
 
     def getQuestionAnswer(mode, category, value):
         for questions in mode.jeopardyQs:
             if (questions['category'] == category 
                     and questions['value'] == "$" + str(value)):
-                    return(questions['question'], questions['answer'])
-        return ("No Question", "No Answer")
-
+                    (mode.question, mode.answer) = (questions['question'], questions['answer'])
+        if mode.question == None:
+            print("WHAATTT?????")
+        elif mode.answer == None:
+            print("HUH?")
+        else:
+            print(f'{mode.question}, {mode.answer}')
+        return (4,2)
 
     # From http://www.cs.cmu.edu/~112/notes/notes-animations-part1.html
     def getCellBounds(mode, row, col):
@@ -154,17 +158,14 @@ class Question(object):
         self.question = question
         self.answer = answer
 
+        
 
 # 4. Question mode
-class QuestionMode(GameMode):
-    def appStarted(mode):
-        super().appStarted()
-        mode.questionAnswer = Question(mode.question, mode.answer)
-
+class QuestionMode(Mode):
     def redrawAll(mode, canvas):
         canvas.create_rectangle(0,0, mode.width, mode.height, fill = "blue")
         canvas.create_text(mode.width/2, mode.height/2, 
-                            text = mode.questionAnswer.question)
+                            text = mode.app.gameMode.question, width = mode.width)
         """font = 'Arial 26 bold'
         txt = f'Question Mode\nQuestion={mode.question}\nAnswer={mode.answer}'
         canvas.create_text(mode.width//2,mode.height//2,text=txt,font=font)"""
