@@ -24,9 +24,6 @@ def roundHalfUp(d):
 
 #######################################################################
 def playGame():
-    '''
-    Setup the window for the game
-    '''
     (rows, cols, cellSize, margin) = gameDimensions() #get dimensions
     #Calculate width and height
     width  = cellSize * cols + margin*2
@@ -34,9 +31,6 @@ def playGame():
     runApp(width=width, height=height) 
 
 def gameDimensions():
-    '''
-    Send default values for window setup. 
-    '''
     rows = 6
     cols = 6
     cellSize = 150
@@ -44,9 +38,6 @@ def gameDimensions():
     return(rows, cols, cellSize, margin)    
     
 def appStarted(app):
-    '''
-    Sets up game state
-    '''
     (rows, cols, cellSize, margin) = gameDimensions()
     app.rows   = rows
     app.cols   = cols
@@ -70,10 +61,7 @@ def drawCell(app, row, col):
 def drawBackground(app, canvas):
     canvas.create_rectangle(0, 0, app.width, app.height, fill='pink')
 
-#from the notes with edits
 def drawBoard(app, canvas):
-    #Back ground to orange
-    #canvas.create_rectangle(0, 0, app.width, app.height, fill='orange')
     for row in range(app.rows):
         for col in range(app.cols):
             (x0, y0, x1, y1) = drawCell(app, row, col)
